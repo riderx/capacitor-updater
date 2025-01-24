@@ -151,7 +151,6 @@ public class CapacitorUpdaterPlugin extends Plugin {
             return;
         }
         final CapConfig config = CapConfig.loadDefault(this.getActivity());
-        this.implementation.appId = InternalUtils.getPackageName(getContext().getPackageManager(), getContext().getPackageName());
         this.implementation.appId = config.getString("appId", this.implementation.appId);
         this.implementation.appId = this.getConfig().getString("appId", this.implementation.appId);
         if (this.implementation.appId == null || this.implementation.appId.isEmpty()) {
@@ -162,10 +161,6 @@ public class CapacitorUpdaterPlugin extends Plugin {
         }
         Log.i(CapacitorUpdater.TAG, "appId: " + implementation.appId);
         this.implementation.publicKey = this.getConfig().getString("publicKey", "");
-        this.implementation.privateKey = this.getConfig().getString("privateKey", "");
-        if (this.implementation.privateKey != null && !this.implementation.privateKey.isEmpty()) {
-            this.implementation.hasOldPrivateKeyPropertyInConfig = true;
-        }
         this.implementation.statsUrl = this.getConfig().getString("statsUrl", statsUrlDefault);
         this.implementation.channelUrl = this.getConfig().getString("channelUrl", channelUrlDefault);
         int userValue = this.getConfig().getInt("periodCheckDelay", 0);

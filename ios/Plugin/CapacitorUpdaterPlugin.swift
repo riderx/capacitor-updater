@@ -106,15 +106,10 @@ public class CapacitorUpdaterPlugin: CAPPlugin, CAPBridgedPlugin {
             periodCheckDelay = periodCheckDelayValue
         }
 
-        implementation.privateKey = getConfig().getString("privateKey", "")!
         implementation.publicKey = getConfig().getString("publicKey", "")!
-        if !implementation.privateKey.isEmpty {
-            implementation.hasOldPrivateKeyPropertyInConfig = true
-        }
         implementation.notifyDownloadRaw = notifyDownload
         implementation.PLUGIN_VERSION = self.PLUGIN_VERSION
         let config = (self.bridge?.viewController as? CAPBridgeViewController)?.instanceDescriptor().legacyConfig
-        implementation.appId = Bundle.main.infoDictionary?["CFBundleIdentifier"] as? String ?? ""
         implementation.appId = config?["appId"] as? String ?? implementation.appId
         implementation.appId = getConfig().getString("appId", implementation.appId)!
         if implementation.appId == "" {
@@ -295,13 +290,11 @@ public class CapacitorUpdaterPlugin: CAPPlugin, CAPBridgedPlugin {
         DispatchQueue.global(qos: .background).async {
             do {
                 let next = try self.implementation.download(url: url!, version: version, sessionKey: sessionKey)
-                if !self.implementation.hasOldPrivateKeyPropertyInConfig {
-                    do {
-                        checksum = try CryptoCipherV2.decryptChecksum(checksum: checksum, publicKey: self.implementation.publicKey, version: version)
-                    } catch {
-                        self.implementation.sendStats(action: "decrypt_fail", versionName: version)
-                        throw error
-                    }
+                do {
+                    checksum = try CryptoCipher.decryptChecksum(checksum: checksum, publicKey: self.implementation.publicKey, version: version)
+                } catch {
+                    self.implementation.sendStats(action: "decrypt_fail", versionName: version)
+                    throw error
                 }
                 if (checksum != "" || self.implementation.publicKey != "") && next.getChecksum() != checksum {
                     print("\(CapacitorUpdater.TAG) Error checksum", next.getChecksum(), checksum)
@@ -816,13 +809,11 @@ public class CapacitorUpdaterPlugin: CAPPlugin, CAPBridgedPlugin {
                         self.endBackGroundTaskWithNotif(msg: "Latest version is in error state. Aborting update.", latestVersionName: latestVersionName, current: current)
                         return
                     }
-                    if !self.implementation.hasOldPrivateKeyPropertyInConfig {
-                        do {
-                            res.checksum = try CryptoCipherV2.decryptChecksum(checksum: res.checksum, publicKey: self.implementation.publicKey, version: latestVersionName)
-                        } catch {
-                            self.implementation.sendStats(action: "decrypt_fail", versionName: latestVersionName)
-                            throw error
-                        }
+                    do {
+                        res.checksum = try CryptoCipher.decryptChecksum(checksum: res.checksum, publicKey: self.implementation.publicKey, version: latestVersionName)
+                    } catch {
+                        self.implementation.sendStats(action: "decrypt_fail", versionName: latestVersionName)
+                        throw error
                     }
                     if res.checksum != "" && next.getChecksum() != res.checksum && res.manifest == nil {
                         print("\(CapacitorUpdater.TAG) Error checksum", next.getChecksum(), res.checksum)

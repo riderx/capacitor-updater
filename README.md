@@ -38,8 +38,9 @@ I maintain a more user-friendly and complete [documentation here](https://capgo.
 
 | Plugin version | Capacitor compatibility | Maintained        |
 | -------------- | ----------------------- | ----------------- |
-| v6.\*.\*       | v6.\*.\*                | ✅                 |
-| v5.\*.\*       | v5.\*.\*                | Critical bug only |
+| v7.\*.\*       | v7.\*.\*                | ✅                 |
+| v6.\*.\*       | v6.\*.\*                | Critical bug only |
+| v5.\*.\*       | v5.\*.\*                | ⚠️ Deprecated |
 | v4.\*.\*       | v4.\*.\*                | ⚠️ Deprecated |
 | v3.\*.\*       | v3.\*.\*                | ⚠️ Deprecated     |
 | > 7            | v4.\*.\*                | ⚠️ Deprecated, our CI got crazy and bumped too much version     |
@@ -101,6 +102,7 @@ Download update distribution zipfiles from a custom URL. Manually control the en
 	"appName": "Name",
 	"plugins": {
 		"CapacitorUpdater": {
+      "appId": "com.example.app",
 			"autoUpdate": false,
 		}
 	}
@@ -208,7 +210,6 @@ CapacitorUpdater can be configured with these options:
 | **`updateUrl`**              | <code>string</code>  | Configure the URL / endpoint to which update checks are sent. Only available for Android and iOS.                                                                                               | <code>https://plugin.capgo.app/updates</code>      |         |
 | **`channelUrl`**             | <code>string</code>  | Configure the URL / endpoint for channel operations. Only available for Android and iOS.                                                                                                        | <code>https://plugin.capgo.app/channel_self</code> |         |
 | **`statsUrl`**               | <code>string</code>  | Configure the URL / endpoint to which update statistics are sent. Only available for Android and iOS. Set to "" to disable stats reporting.                                                     | <code>https://plugin.capgo.app/stats</code>        |         |
-| **`privateKey`**             | <code>string</code>  | Configure the private key for end to end live update encryption. Only available for Android and iOS. Deprecated in version 6.2.0. will be removed in version 7.0.0.                             | <code>undefined</code>                             |         |
 | **`publicKey`**              | <code>string</code>  | Configure the public key for end to end live update encryption Version 2 Only available for Android and iOS.                                                                                    | <code>undefined</code>                             | 6.2.0   |
 | **`version`**                | <code>string</code>  | Configure the current version of the app. This will be used for the first update request. If not set, the plugin will get the version from the native code. Only available for Android and iOS. | <code>undefined</code>                             | 4.17.48 |
 | **`directUpdate`**           | <code>boolean</code> | Make the plugin direct install the update when the app what just updated/installed. Only for autoUpdate mode. Only available for Android and iOS.                                               | <code>undefined</code>                             | 5.1.0   |
@@ -242,7 +243,6 @@ In `capacitor.config.json`:
       "updateUrl": https://example.com/api/auto_update,
       "channelUrl": https://example.com/api/channel,
       "statsUrl": https://example.com/api/stats,
-      "privateKey": undefined,
       "publicKey": undefined,
       "version": undefined,
       "directUpdate": undefined,
@@ -282,7 +282,6 @@ const config: CapacitorConfig = {
       updateUrl: https://example.com/api/auto_update,
       channelUrl: https://example.com/api/channel,
       statsUrl: https://example.com/api/stats,
-      privateKey: undefined,
       publicKey: undefined,
       version: undefined,
       directUpdate: undefined,
